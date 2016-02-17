@@ -1,7 +1,7 @@
 ABOUT
 Biblio Zotero is a custom Feeds implementation to subscribe to 
 multiple zotero user and group libraries and sync them with a biblio library. 
-It has been tested with Biblio versions 6.x-1.15 and 7.x-1.0-rc4
+It has been tested with Biblio version 7.x-1.0-rc7
 
 DEPENDENCIES
 Requires: feeds and biblio. feeds_ui is also needed if you want to change 
@@ -13,7 +13,7 @@ Install and enable the module at admin/structure/modules
 CREATE YOUR FIRST ZOTERO-FEED NODE:
 1. Go to: <yoursite>/node/add/zotero-feed
 2. Name your feed, preferably, use the same name as your zotero library.
-3. Specify if it is to pull from a zotero group or from a personal library.
+3. Specify if it is to pull from a zotero group or from a personal library (user).
 4. If your zotero group or library is private, then you need to create an 
 api key for yourself: https://www.zotero.org/settings/keys and then paste 
 the value of the key into the api key field of your feed settings.

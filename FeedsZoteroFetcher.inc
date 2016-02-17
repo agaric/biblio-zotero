@@ -197,7 +197,7 @@ class FeedsZoteroFetcher extends FeedsHTTPFetcher {
     $form['collection_key'] = array(
       '#type' => 'textfield',
       '#title' => t('Collection ID'),
-      '#description' => t("Only applicable if Fetch Collections above is selected. If none is entered, all top level collections for the user or group will be retrieved.")
+      '#description' => t('Only applicable if Fetch Collections above is selected. If none is entered, all top level collections for the user or group will be retrieved. If you enter a collection id, only items from that collection will be fetched from Zotero. Collections are the "folders" in your Zotero library. To find the id of a collection, go to your library, click on a collection to see its content, and look at the page URL. The collection id is the last item in the path, after "collectionKey/".')
     );
     $form['api_key'] = array(
       '#type' => 'textfield',

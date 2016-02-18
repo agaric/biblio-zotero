@@ -329,8 +329,6 @@ function biblio_zotero_get_collection_term($collection_key) {
 }
 
 function biblio_zotero_create_collection_term($vid, $name, $collection_key, $parent_collection_key = FALSE) {
-  global $count;
-  $count++;
   $term = new StdClass();
   $term->vid = $vid;
   $term->name = $name;

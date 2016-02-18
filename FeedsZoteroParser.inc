@@ -81,6 +81,8 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
 
           $item['long_title'] = (string) $entry->title;
 
+          $item['creators'] = $data->creators;
+
           // Item may have been processed in another collection, copy collection keys from result if they exist
           $item['collection_keys'] = isset($result->items[$item_key]) ? $result->items[$item_key]['collection_keys'] : array();
 

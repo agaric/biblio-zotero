@@ -371,7 +371,7 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
     if ($enable_search_index) {
       variable_set('biblio_index', 1);
     }
-    //Reindex search
+    // Reindex search.
     search_update_totals();
     /** @TODO look at parent::process to see about UPDATING during import * */
   }

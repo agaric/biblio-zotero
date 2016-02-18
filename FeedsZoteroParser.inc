@@ -65,7 +65,7 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
           $data = json_decode($json);
 
           $item = array();
-          // The immediately following item
+          // The immediately following items, including all from JSON data, will receive item prefixes.
           $item = array_merge($item, (array) $data);
           $item['description'] = ''; //description gets mapped to Full Text of the biblio node so leave it blank
           $item['title'] = (string) $entry->title;
@@ -74,7 +74,7 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
           self::addItemTypePrefixes($item, $item_type);
 
           // Keys added below here will not recieve the item type prefix.
-          // $no_rename = array('itemType', 'guid', 'tags', 'creators', 'collection_keys', 'files', 'links', 'long_title');
+          // $no_rename = array('itemType', 'guid', 'creators', 'collection_keys', 'tags', 'files', 'links', 'long_title');
           $item['itemType'] = $item_type;
 
           $this->addZoteroChildren($item, $fetcher_result->getChildPages($item_key));

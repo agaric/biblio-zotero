@@ -26,14 +26,14 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
    */
   public function configDefaults() {
     $config = parent::configDefaults();
-    $config['sync_tags'] = false;
-    $config['tags_field'] = null;
-    $config['tags_vocab'] = null;
-    $config['collections_field'] = null;
-    $config['collections_vocab'] = null;
+    $config['sync_tags'] = FALSE;
+    $config['tags_field'] = NULL;
+    $config['tags_vocab'] = NULL;
+    $config['collections_field'] = NULL;
+    $config['collections_vocab'] = NULL;
     $config['notes_field'] = 'biblio_notes';
     $config['use_feed_owner_as_author'] = FALSE;
-    $config['zotero_username_field_name'] = '';
+    $config['zotero_username_field_name'] = NULL;
     return $config;
   }
 

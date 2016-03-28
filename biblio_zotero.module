@@ -328,19 +328,6 @@ function biblio_zotero_get_collection_term($collection_key) {
   }
 }
 
-function biblio_zotero_create_collection_term($vid, $name, $collection_key, $parent_collection_key = FALSE) {
-  $term = new StdClass();
-  $term->vid = $vid;
-  $term->name = $name;
-  $term->key = $collection_key;
-  $term->parentterm = $parent_collection_key;
-  if ($parent_collection_key) {
-    $term->parent = biblio_zotero_get_collection_term($parent_collection_key)->tid;
-  }
-  taxonomy_term_save($term);
-  db_query('INSERT INTO {biblio_zotero_collections} VALUES (:tid, :key)', array(':tid' => $term->tid, ':key' => $collection_key));
-}
-
 /**
  * Implements hook_taxonomy_term_delete().
  */

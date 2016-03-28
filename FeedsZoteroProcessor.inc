@@ -34,6 +34,7 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
     $config['notes_field'] = 'biblio_notes';
     $config['use_feed_owner_as_author'] = FALSE;
     $config['zotero_username_field_name'] = NULL;
+    $config['url_field'] = NULL;
     return $config;
   }
 
@@ -96,6 +97,24 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
     } else {
       $form['no_vocabs'] = array(
         '#markup' => t('<p class="warning">Please configure at least one !taxo_link to import zotero tags. </p>', array('!taxo_link' => l(t('taxonomy vocabulary'), 'admin/structure/taxonomy')))
+      );
+    }
+    $text_fields = biblio_zotero_fields_by_type_by_bundle('node', $content_type, 'text_textfield');
+    $text_field_options = array(t(' - Select -'));
+    $text_field_options += $text_fields;
+
+    if (!empty($text_fields)) {
+      $form['url_field'] = array(
+        '#type' => 'select',
+        '#title' => t('Zotero item URL field'),
+        '#description' => t('Select a text field in the @type content type to use for the Zotero item URL.', array('@type' => $content_type)),
+        '#options' => $text_field_options,
+        '#default_value' => $this->config['url_field'],
+      );
+    }
+    else {
+      $form['url_field'] = array(
+        '#markup' => t('To save the Zotero item URL for each item on @type nodes, add a text field on that node type to hold it.', array('@type' => $content_type)),
       );
     }
 
@@ -361,7 +380,7 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
 
     $this->cleanUpCollectionTerms($parser_result->collections);
 
-    if (isset($this->config['tags_vocab']) and !empty($this->config['tags_vocab'])) {
+    if (isset($this->config['tags_vocab']) and ! empty($this->config['tags_vocab'])) {
       $this->cleanUpZoteroTags();
     }
 
@@ -427,9 +446,9 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
     if ($vocab) {
       foreach ($collections as $collection) {
         if (!biblio_zotero_get_collection_term($collection['key'])) {
-          biblio_zotero_create_collection_term($vocab->vid, $collection['title'], $collection['key'], $collection['parent']);
+          $this->createCollectionTerm($collection['title'], $collection['key'], $collection['parent']);
         }
-        //Recursively create terms for children, if any exist
+        // Recursively create terms for children, if any exist.
         if ($collection['children']) {
           $this->createCollectionTerms($collection['children']);
         }
@@ -437,17 +456,32 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
     }
   }
 
+  protected function createCollectionTerm($name, $collection_key, $parent_collection_key = FALSE) {
+    $vocab = taxonomy_vocabulary_machine_name_load($this->config['collections_vocab']);
+    $term = new StdClass();
+    $term->vid = $vocab->vid;
+    $term->name = $name;
+    $term->key = $collection_key;
+    $term->parentterm = $parent_collection_key;
+    if ($parent_collection_key) {
+      $term->parent = biblio_zotero_get_collection_term($parent_collection_key)->tid;
+    }
+    taxonomy_term_save($term);
+    db_query('INSERT INTO {biblio_zotero_collections} VALUES (:tid, :key)', array(':tid' => $term->tid, ':key' => $collection_key));
+  }
+
+  
   /**
    * Implementation of map function
    * The zotero items are all in  $result->current_item
    * */
   protected function map(FeedsSource $source, FeedsParserResult $result, $target_item = NULL) {
-    //Disable biblio_index so search index doesn't get rebuilt on every node insertion
+    // Disable biblio_index so search index doesn't get rebuilt on every node insertion.
     if ($biblio_index = variable_get('biblio_index', 0)) {
       variable_set('biblio_index', 0);
     }
 
-    // log the mapping succeses and failures to a tab-delimited file in the temp direcory
+    // Log the mapping succeses and failures to a tab-delimited file in the temp direcory.
     if (variable_get('biblio_zotero_enable_log', FALSE)) {
       drupal_set_message('Mapping sources', 'notice');
       $this->logMapping($source, $result);
@@ -708,7 +742,7 @@ class FeedsZoteroProcessor extends FeedsNodeProcessor {
     }
     return $z2b;
   }
-
+  
 }
 
 /**

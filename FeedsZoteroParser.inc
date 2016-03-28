@@ -85,10 +85,12 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
 
           // Item may have been processed in another collection, copy collection keys from result if they exist
           $item['collection_keys'] = isset($result->items[$item_key]) ? $result->items[$item_key]['collection_keys'] : array();
-
           if ($collection_key) {
             $item['collection_keys'][] = $collection_key;
           }
+          $item['collection_keys'] = array_merge($item['collection_keys'], $data->collections);
+
+          $item['tags'] = $data->tags;
 
           $item['key'] = $item_key;
           $item['guid'] = $item_key;
@@ -96,7 +98,8 @@ class FeedsZoteroParser extends FeedsSyndicationParser {
           $item['entry_author_name'] = (string) $entry->author->name;
           $item['entry_author_uri'] = (string) $entry->author->uri;
           $item['entry_last_modified_by'] = (string) $zapi->lastModifiedByUser;
-          // $item['zotero_fetch_url'] = (string) $entry->link[0]->@attributes['href'];
+          $alt = $entry->link[0];
+          $item['zotero_fetch_url'] = (string) $alt->{@attributes}['href'];
           $item['url'] = (string) $entry->id;
           $item['published'] = (string) $entry->published;
           $item['updated'] = (string) $entry->updated;
